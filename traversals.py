@@ -255,14 +255,29 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) -> list[i
     return sorted(list(visited))
 
 
-# def adjacency_matrix_radius(graph: list[list]) -> int:
-#     """
-#     :param list[list] graph: the adjacency matrix of a given graph
-#     :returns int: the radius of the graph
-#     >>> adjacency_matrix_radius([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
-#     1
-#     """
-#     pass
+def adjacency_matrix_radius(graph: list[list]) -> int:
+    """
+    :param list[list] graph: the adjacency matrix of a given graph
+    :returns int: the radius of the graph
+    >>> adjacency_matrix_radius([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
+    1
+    """
+    distance = [[float("inf")] * len(graph) for _ in range(len(graph))]
+    for i, row in enumerate(graph):
+        for j, value in enumerate(row):
+            if i == j:
+                distance[i][j] = 0
+            elif value == 1:
+                distance[i][j] = 1
+
+    for k in range(len(graph)):
+        for i in range(len(graph)):
+            for j in range(len(graph)):
+                distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+
+    eccentr = [max(row) for row in distance]
+    radius = min(eccentr)
+    return radius
 
 
 # def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
