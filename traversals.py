@@ -280,16 +280,33 @@ def adjacency_matrix_radius(graph: list[list]) -> int:
     return radius
 
 
-# def adjacency_dict_radius(graph: dict[int: list[int]]) -> int:
-#     """
-#     :param dict graph: the adjacency list of a given graph
-#     :returns int: the radius of the graph
-#     >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1]})
-#     1
-#     >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1], 3: [1]})
-#     2
-#     """
-#     pass
+def adjacency_dict_radius(graph: dict[int : list[int]]) -> int:
+    """
+    :param dict graph: the adjacency list of a given graph
+    :returns int: the radius of the graph
+    >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1]})
+    1
+    >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1], 3: [1]})
+    2
+    """
+    distance = [[float("inf")] * len(graph) for _ in range(len(graph))]
+    for vertice, neighbours in graph.items():
+        distance[vertice][vertice] = 0
+        for n in neighbours:
+            distance[vertice][n] = 1
+
+    for k in range(len(graph)):
+        for i in range(len(graph)):
+            for j in range(len(graph)):
+                distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+
+    eccentr = []
+    for i in range(len(graph)):
+        max_dist = max(distance[i])
+        if max_dist != float("inf"):
+            eccentr.append(max_dist)
+    radius = min(eccentr)
+    return radius
 
 
 def find_function_runtime(func, graph: list[list[int]]) -> float:
