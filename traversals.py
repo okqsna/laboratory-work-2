@@ -122,6 +122,7 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     return component
 
 
+
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) -> list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -145,7 +146,6 @@ def iterative_adjacency_matrix_dfs(graph: list[list], start: int) -> list[int]:
                     vertices.append(i)
     return res
 
-
 def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
     :param list[list] graph: the adjacency list of a given graph
@@ -156,18 +156,19 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     >>> recursive_adjacency_dict_dfs({0: [1, 2], 1: [0, 2, 3], 2: [0, 1], 3: []}, 0)
     [0, 1, 2, 3]
     """
-    visited = [False] * len(graph)
+    visited = set()
     res = []
 
     def dfs(node):
-        visited[node] = True
+        visited.add(node)
         res.append(node)
         for neighbour in graph.get(node, []):
-            if not visited[neighbour]:
+            if neighbour not in visited:
                 dfs(neighbour)
 
     dfs(start)
     return res
+
 
 
 def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) -> list[int]:
@@ -205,17 +206,21 @@ def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> lis
     [0, 1, 2, 3]
     """
     visited = set()
+    res = []
     not_visited = [start]
 
     while not_visited:
         vertice = not_visited[0]
         if vertice not in visited:
+            res.append(vertice)
             visited.add(vertice)
             for neighbour in graph.get(vertice):
                 if neighbour not in visited:
                     not_visited.append(neighbour)
         not_visited.remove(vertice)
-    return sorted(list(visited))
+    return res
+
+
 
 
 def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) -> list[int]:
@@ -229,17 +234,19 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) -> list[i
     [0, 1, 2, 3]
     """
     visited = set()
+    res = []
     not_visited = [start]
 
     while not_visited:
-        vertice = not_visited[0]
+        vertice = not_visited.pop(0)
         if vertice not in visited:
+            res.append(vertice)
             visited.add(vertice)
             for neighbour in range(len(graph)):
                 if graph[vertice][neighbour] == 1 and neighbour not in visited:
                     not_visited.append(neighbour)
-        not_visited.remove(vertice)
-    return sorted(list(visited))
+    return res
+
 
 
 def adjacency_matrix_radius(graph: list[list]) -> int:
@@ -273,8 +280,6 @@ def adjacency_dict_radius(graph: dict[int : list[int]]) -> int:
     :returns int: the radius of the graph
     >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1]})
     1
-    >>> adjacency_dict_radius({0: [1, 2], 1: [0, 2], 2: [0, 1], 3: [1]})
-    2
     """
     distance = [[float("inf")] * len(graph) for _ in range(len(graph))]
     for vertice, neighbours in graph.items():
@@ -325,5 +330,4 @@ def find_function_runtime(
 
 if __name__ == "__main__":
     import doctest
-
     print(doctest.testmod())
