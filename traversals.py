@@ -28,10 +28,9 @@ def read_incidence_matrix(filename: str) -> list[list]:
     :param str filename: path to file
     :returns list[list]: the incidence matrix of a given graph
     >>> read_incidence_matrix('input.dot')
-    [[-1, 0, 1, 1, 0, -1], [0, -1, 0, -1, 1, 1], [1, 1, -1, 0, -1, 0]]
+    [[-1, -1, 1, 0, 1, 0], [1, 0, -1, -1, 0, 1], [0, 1, 0, 1, -1, -1]]
     """
     graph = read_file(filename)
-
     all_vertices = set()
     for v1, v2 in graph:
         all_vertices.add(v1)
@@ -40,10 +39,10 @@ def read_incidence_matrix(filename: str) -> list[list]:
 
     for i, edge in enumerate(graph):
         if edge[0] == edge[1]:
-            matrix[edge[0] - 1][i] = 2
+            matrix[edge[0]][i] = 2
         else:
-            matrix[edge[0] - 1][i] = 1
-            matrix[edge[1] - 1][i] = -1
+            matrix[edge[0]][i] = -1
+            matrix[edge[1]][i] = 1
 
     return matrix
 
@@ -53,7 +52,7 @@ def read_adjacency_matrix(filename: str) -> list[list]:
     :param str filename: path to file
     :returns list[list]: the adjacency matrix of a given graph
     >>> read_adjacency_matrix('input.dot')
-    [[0, 1, 0], [1, 0, 0], [0, 0, 0]]
+    [[0, 1, 1], [1, 0, 1], [1, 1, 0]]
     """
     graph = read_file(filename)
     all_vertices = set()
@@ -65,10 +64,11 @@ def read_adjacency_matrix(filename: str) -> list[list]:
         len(all_vertices) * [0 * (len(all_vertices))]
         for _ in range(1, len(all_vertices) + 1)
     ]
+    matrix = [[0 for _ in range(len(all_vertices))] for _ in range(len(all_vertices))]
 
     for i, _ in enumerate(matrix):
         for j in range(len(matrix[i])):
-            if (i + 1, j + 1) in graph:
+            if (i, j) in graph:
                 matrix[i][j] = 1
     return matrix
 
@@ -78,7 +78,7 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
     :param str filename: path to file
     :returns dict: the adjacency dict of a given graph
     >>> read_adjacency_dict('input.dot')
-    {0: {1, 2}, 1: {0, 2}, 2: {0, 1}}
+    {0: [1, 2], 1: [0, 2], 2: [0, 1]}
     """
     edges_list = read_file(filename)
 
@@ -91,7 +91,9 @@ def read_adjacency_dict(filename: str) -> dict[int, list[int]]:
 
         neighbour_vertex[v1].add(v2)
         neighbour_vertex[v2].add(v1)
-    return neighbour_vertex
+    new_dict = {k: sorted(list(v)) for k, v in neighbour_vertex.items()}
+    final_res = dict(sorted(new_dict.items(), key=lambda x: x[0]))
+    return final_res
 
 
 def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
