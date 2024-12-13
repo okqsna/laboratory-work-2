@@ -122,7 +122,6 @@ def iterative_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     return component
 
 
-
 def iterative_adjacency_matrix_dfs(graph: list[list], start: int) -> list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -146,6 +145,7 @@ def iterative_adjacency_matrix_dfs(graph: list[list], start: int) -> list[int]:
                     vertices.append(i)
     return res
 
+
 def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> list[int]:
     """
     :param list[list] graph: the adjacency list of a given graph
@@ -168,7 +168,6 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
 
     dfs(start)
     return res
-
 
 
 def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) -> list[int]:
@@ -221,8 +220,6 @@ def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> lis
     return res
 
 
-
-
 def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) -> list[int]:
     """
     :param dict graph: the adjacency matrix of a given graph
@@ -246,7 +243,6 @@ def iterative_adjacency_matrix_bfs(graph: list[list[int]], start: int) -> list[i
                 if graph[vertice][neighbour] == 1 and neighbour not in visited:
                     not_visited.append(neighbour)
     return res
-
 
 
 def adjacency_matrix_radius(graph: list[list]) -> int:
@@ -293,10 +289,10 @@ def adjacency_dict_radius(graph: dict[int : list[int]]) -> int:
                 distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
 
     eccentr = []
-    for i in range(len(graph)):
-        max_dist = max(distance[i])
-        if max_dist != float("inf"):
-            eccentr.append(max_dist)
+    for row in distance:
+        if all(d == float("inf") for d in row):
+            continue
+        eccentr.append(max(d for d in row if d != float("inf")))
     radius = min(eccentr)
     return radius
 
@@ -330,4 +326,5 @@ def find_function_runtime(
 
 if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())
