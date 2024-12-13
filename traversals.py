@@ -19,7 +19,7 @@ def read_file(filename: str) -> list[tuple]:
         edges_list = []
         for line in file.readlines()[1:-1]:
             line = line.strip().split("->")
-            edges_list.append((int(line[0].strip()), int(line[1].strip(';'))))
+            edges_list.append((int(line[0].strip()), int(line[1].strip(";"))))
     return edges_list
 
 
@@ -155,21 +155,17 @@ def recursive_adjacency_dict_dfs(graph: dict[int, list[int]], start: int) -> lis
     [0, 1, 2, 3]
     """
     visited = [False] * len(graph)
+    res = []
 
-    def dfs(start, res=None):
-        if res is None:
-            res = []
-        visited[start] = True
-        res.append(start)
-        for neighbour in graph.get(start):
+    def dfs(node):
+        visited[node] = True
+        res.append(node)
+        for neighbour in graph.get(node, []):
             if not visited[neighbour]:
-                dfs(neighbour, res)
+                dfs(neighbour)
 
-    for i in range(len(graph)):
-        if not visited[i]:
-            component = []
-            dfs(i, component)
-    return component
+    dfs(start)
+    return res
 
 
 def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) -> list[int]:
@@ -183,22 +179,17 @@ def recursive_adjacency_matrix_dfs(graph: list[list[int]], start: int) -> list[i
     [0, 1, 2, 3]
     """
     visited = [False] * len(graph)
+    res = []
 
-    def dfs(start, components=None):
-        if components is None:
-            components = []
-        visited[start] = True
-        components.append(start)
-        for neighbor, connected in enumerate(graph[start]):
+    def dfs(node):
+        visited[node] = True
+        res.append(node)
+        for neighbor, connected in enumerate(graph[node]):
             if connected == 1 and not visited[neighbor]:
-                dfs(neighbor, components)
+                dfs(neighbor)
 
-    for i in range(len(graph)):
-        if not visited[i]:
-            component = []
-            dfs(i, component)
-
-    return component
+    dfs(start)
+    return res
 
 
 def iterative_adjacency_dict_bfs(graph: dict[int, list[int]], start: int) -> list[int]:
@@ -303,8 +294,9 @@ def adjacency_dict_radius(graph: dict[int : list[int]]) -> int:
     return radius
 
 
-def find_function_runtime(func, path = None, matrix = None,\
-    start_point = 0, dictionary = None) -> float:
+def find_function_runtime(
+    func, path=None, matrix=None, start_point=0, dictionary=None
+) -> float:
     """
     Returns the runtime of the function
 
@@ -323,12 +315,13 @@ def find_function_runtime(func, path = None, matrix = None,\
     end = time.perf_counter()
     return end - begin
 
-print(find_function_runtime(read_incidence_matrix, path='input.dot'))
-print(find_function_runtime(read_adjacency_dict, path='input.dot'))
-print(find_function_runtime(read_adjacency_matrix, path='input.dot'))
 
+# print(find_function_runtime(read_incidence_matrix, path='input.dot'))
+# print(find_function_runtime(read_adjacency_dict, path='input.dot'))
+# print(find_function_runtime(read_adjacency_matrix, path='input.dot'))
 
 
 if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod())
